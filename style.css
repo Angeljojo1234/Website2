@@ -1,0 +1,67 @@
+.bg-dot{
+    background-color: mistyrose
+}
+
+.section1{
+    margin-left: 100px;
+    margin-right: 100px;
+}
+
+.judul{
+    text-align: center;
+     font-family: "Poetsen One", sans-serif;
+}
+
+.misela{
+     font-family: "Josefin Sans", sans-serif;
+}
+
+.tittle{
+    text-align: center;
+    font-family: "Poetsen One", sans-serif;
+    color: lightpink;
+    font-size: 40px;
+}
+
+.background {
+    background-color: lightyellow;
+    text-align: center;
+}
+
+.sub-tittle{
+    text-align: center;
+    font-family: "poetsen One", sans-serif;
+    color: pink;
+    margin-top: 140px;
+    font-style: italic;
+}
+
+.button{
+    border-radius: 2px solid white;
+    color: white;
+    background-color: lightpink;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-weight: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 120px;
+    font-family: "Josefin Sans", sans-serif;
+    font-weight: bolder;
+}
+
+.section2{
+    margin-left: 100px;
+    margin-right: 100px;
+}
+
+.judul2{
+    text-align: center;
+     font-family: "Poetsen One", sans-serif;
+}
+
+.yes{
+     font-family: "Josefin Sans", sans-serif;
+}

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="style.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Poetsen+One&family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Poetsen+One&family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="section2">
+        <h1 class="judul2">Represent The Data Of Math Score In Histogram</h1>
+
+        <p class="yes">We used histogram to represent the data of math score for each student in Peachblossoms. 
+        A histogram is a graph used to represent the frequency distribution of a few data points of one variable. Histograms often classify data into various “bins” or “range groups” and count how many data points belong to each of those bins. The histogram was invented by Karl Pearson, an English mathematician. </p>
+    </div>
+
+
+  <div>
+  <canvas id="myChart"></canvas>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+      var data = [75, 89, 70, 79, 90, 80, 80, 40, 85, 70, 93, 60, 70, 81, 84, 
+                  80, 73, 88, 89, 81, 70, 55, 93, 81, 73, 90, 80, 62, 84, 60, 
+                  80, 96, 83, 70, 89, 100, 79, 83, 91, 72, 78, 78, 80, 90, 60, 
+                  90, 90, 85, 80, 80, 82, 83, 85, 98, 90, 90, 90, 82, 86, 95, 
+                  93, 79, 88, 84, 78, 96, 68, 60, 93, 90, 70, 50, 80, 75, 92, 
+                  85, 60];
+      var interval = [40, 50, 60, 70, 80, 90, 100, 110];
+      var intervalCounts = new Array(interval.length - 1).fill(0);
+
+      data.forEach(value => {
+        for (var i = 0; i < interval.length - length - 1; i++) {
+          if (value >= interval[i] && value < interval[i + 1]) {
+          intervalCounts[i]++;
+          break;
+        }
+       }
+      });
+
+      var angelina = document.getElementById('myChart');
+    
+      new Chart(angelina, {
+        type: 'bar',
+        data: {
+          labels: interval.slice(0,-1).map ((b, i)=> `${b}- ${interval[i+1]}`),
+
+          datasets: [{
+            label: 'Peachblossoms Student Math Score',
+            data: intervalCounts,
+            backgroundColor: [
+              'rgba(214, 234, 248, 1)',
+              'rgba(174, 214, 241, 1)',
+              'rgba(235, 222, 240, 1)',
+              'rgba(215, 189, 226, 1)',
+              'rgba(250, 219, 216, 1)',
+              'rgba(245, 183, 177, 1)',
+              'rgba(250, 219, 216, 1)',
+            ],
+            borderWidth: 1,
+            barPercentage: 1.0,
+            categoryPercentage: 1.0
+
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    </script>
+  
+</body>
+</html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dot Plot Jumlah Siswa per Kelas - D3.js</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Poetsen+One&family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Poetsen+One&family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <style>
+        .chart-container {
+            margin: 20px auto;
+            /* Atur lebar dan tinggi sesuai margin */
+            width: 800px;
+            height: 450px;
+            overflow: auto;
+        }
+
+        .axis path,
+        .axis line {
+            fill: none;
+            stroke: #000;
+            shape-rendering: crispEdges;
+        }
+
+        .axis text {
+            font-family: sans-serif;
+            font-size: 10px;
+        }
+
+        .dot {
+            fill: lightgoldenrodyellow; /* Warna titik */
+            stroke: black; /* Border titik */
+            stroke-width: 1;
+        }
+
+        .chart-title {
+            font-family: sans-serif;
+            font-size: 16px;
+            font-weight: bold;
+            text-anchor: middle;
+        }
+
+        .axis-title {
+             font-family: sans-serif;
+             font-size: 12px;
+             text-anchor: middle;
+        }
+
+    </style>
+</head>
+<body class="bg-dot">
+
+    <div class="section1">
+        <h1 class="judul">Represent The Data Of Math Score In Dot Diagram</h1>
+
+        <p class="misela">We used Dot diagram to represent the data of math score for each student in Peachblossoms. 
+        A dot diagram, also called a dot plot, is a statistical chart consisting of data points 
+        plotted on a fairly simple scale. Dot plots are one of the simplest statistical plots, 
+        and they are usually used for small data sets. </p>
+    </div>
+
+
+    <div class="chart-container"></div>
+
+    <script>
+        // Data jumlah siswa per kelas
+        const rawDataSiswa = {
+            '40': 1,
+            '41': 0,
+            '42': 0,
+            '43': 0,
+            '44': 0,
+            '45': 0,
+            '46': 0,
+            '47': 0,
+            '48': 0,
+            '49': 0,
+            
+            '50': 1,
+            '51': 0,
+            '52': 0,
+            '53': 0,
+            '54': 0,
+            '55': 1,
+            '56': 0,
+            '57': 0,
+            '58': 0,
+            '59': 0,
+
+            '60': 5,
+            '61': 0,
+            '62': 1,
+            '63': 0,
+            '64': 0,
+            '65': 0,
+            '66': 0,
+            '67': 0,
+            '68': 1,
+            '69': 0,
+
+            '70': 6,
+            '71': 0,
+            '72': 1,
+            '73': 2,
+            '74': 0,
+            '75': 2,
+            '76': 0,
+            '77': 0,
+            '78': 3,
+            '79': 3,
+
+            '80': 9,
+            '81': 3,
+            '82': 2,
+            '83': 3,
+            '84': 3,
+            '85': 4,
+            '86': 1,
+            '87': 0,
+            '88': 2,
+            '89': 3,
+
+            '90': 9,
+            '91': 1,
+            '92': 1,
+            '93': 4,
+            '94': 0,
+            '95': 1,
+            '96': 2,
+            '97': 0,
+            '98': 1,
+            '99': 0,
+            '100':1,
+        };
+
+        // Array untuk label sumbu X (nama-nama kelas)
+        const classLabels = Object.keys(rawDataSiswa);
+
+        // Konfigurasi dimensi chart dan margin
+        const margin = { top: 50, right: 30, bottom: 60, left: 50 };
+        const containerWidth = 1400;
+        const containerHeight = 450;
+        const width = containerWidth - margin.left - margin.right;
+        const height = containerHeight - margin.top - margin.bottom;
+
+        // Buat elemen SVG di dalam container
+        const svg = d3.select(".chart-container")
+            .append("svg")
+            .attr("width", containerWidth)
+            .attr("height", containerHeight)
+            .append("g")
+            .attr("transform", `translate(${margin.left},${margin.top})`);
+
+        // Skala X (skala band untuk kategori)
+        const xScale = d3.scaleBand()
+            .domain(classLabels) // Domain adalah nama-nama kelas
+            .range([0, width]) // Rentang visual pada sumbu X
+            .padding(0.5); // Padding antar band
+
+        // Hitung jumlah siswa maksimum untuk skala Y
+        const maxStudents = d3.max(Object.values(rawDataSiswa));
+
+        // Skala Y (skala linear untuk hitungan/posisi tumpukan)
+        const yScale = d3.scaleLinear()
+            .domain([0, maxStudents + 2]) // Domain dari 0 hingga jumlah siswa maksimum + sedikit ruang
+            .range([height, 0]); // Rentang visual pada sumbu Y (tinggi chart, 0)
+
+        // Buat data point untuk D3.js (untuk efek tumpukan)
+        const chartDataPoints = [];
+        for (const className in rawDataSiswa) {
+            if (rawDataSiswa.hasOwnProperty(className)) {
+                const studentCount = rawDataSiswa[className];
+                for (let i = 1; i <= studentCount; i++) {
+                    chartDataPoints.push({
+                        className: className, // Simpan nama kelas
+                        studentPosition: i, // Simpan posisi dalam tumpukan
+                        classIndex: classLabels.indexOf(className) // Simpan index kelas
+                    });
+                }
+            }
+        }
+
+        // Tambahkan titik-titik (lingkaran) ke SVG
+        svg.selectAll(".dot")
+            .data(chartDataPoints)
+            .enter()
+            .append("circle")
+            .attr("class", "dot")
+            .attr("cx", d => xScale(d.className) + xScale.bandwidth() / 2) // Posisi X di tengah band kategori
+            .attr("cy", d => yScale(d.studentPosition)) // Posisi Y berdasarkan posisi siswa dalam tumpukan
+            .attr("r", 4); // Radius titik
+
+        // Tambahkan sumbu X
+        svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", `translate(0,${height})`)
+            .call(d3.axisBottom(xScale));
+
+        // Tambahkan label sumbu X
+         svg.append("text")
+            .attr("class", "axis-title")
+            .attr("x", width / 2)
+            .attr("y", height + margin.bottom - 10)
+            .text("Math Score");
+
+
+        // Tambahkan sumbu Y
+        svg.append("g")
+            .attr("class", "y axis")
+            .call(d3.axisLeft(yScale)
+                   .tickValues(d3.range(0, maxStudents + 1, 1))); // Tampilkan tick setiap 5 siswa, sesuaikan jika perlu
+
+
+         // Tambahkan label sumbu Y
+         svg.append("text")
+            .attr("class", "axis-title")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 0 - margin.left + 10) // Sesuaikan posisi
+            .attr("x", 0 - (height / 2))
+            .attr("dy", "1em") // Sesuaikan posisi
+            .text("Peachblossoms Student");
+
+         // Tambahkan judul chart
+         svg.append("text")
+            .attr("class", "chart-title")
+            .attr("x", width / 2)
+            .attr("y", 0 - (margin.top / 2)) // Posisikan di atas chart
+            .text("Peachblossoms Student Math Score");
+
+    </script>
+
+</body>
+</html>
